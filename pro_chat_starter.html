@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRO CHAT — اتاق گفت‌وگو</title>
+<style>
+:root{--bg:#090909;--panel:#141414;--panel2:#1c1c1c;--gold:#e8bd58;--gold2:#a77b21;--text:#f5f0e5;--muted:#aaa18e;--line:#383024;--danger:#ff6666;--green:#65d6a1}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#252016 0,#090909 48%);color:var(--text);font-family:Tahoma,Arial,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+.app{max-width:900px;margin:auto;min-height:100vh;display:flex;flex-direction:column;background:#0c0c0cf2;border-inline:1px solid #302719;box-shadow:0 0 60px #0008}
+header{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--line);background:#101010;position:sticky;top:0;z-index:3}
+.brand{font-weight:900;letter-spacing:1px;color:var(--gold);font-size:20px}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:3px}
+.avatar{width:43px;height:43px;border-radius:50%;object-fit:cover;background:#332a1b;border:2px solid var(--gold);display:grid;place-items:center;flex-shrink:0;color:var(--gold);font-weight:bold}
+.headinfo{flex:1;min-width:0}.headinfo strong{display:block}.status{font-size:11px;color:var(--green);margin-top:4px}.iconbtn,.btn{border:1px solid var(--line);color:var(--gold);background:#211b10;border-radius:12px;padding:10px 12px}
+.iconbtn{font-size:18px;min-width:42px}.btn.primary{background:linear-gradient(135deg,#f4d57d,#b27c20);color:#171109;border:0;font-weight:bold}.btn.danger{color:#ff9c9c;border-color:#613333;background:#291515}
+main{flex:1;display:flex;flex-direction:column;min-height:0}.welcome{margin:14px;padding:18px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(135deg,#201b11,#121212)}
+.welcome h2{margin:0 0 8px;color:var(--gold)}.welcome p{margin:0;color:#c6bdad;font-size:13px;line-height:1.9}
+.messages{padding:10px 12px 18px;display:flex;flex-direction:column;gap:13px;flex:1;overflow-y:auto;min-height:250px}
+.day{text-align:center;color:#827967;font-size:11px;margin:8px}
+.msg{display:flex;gap:9px;align-items:flex-end;max-width:90%;align-self:flex-start}.msg.mine{align-self:flex-end;flex-direction:row-reverse}.msg .avatar{width:33px;height:33px;border-width:1px;font-size:12px}
+.bubble{background:#1b1b1b;border:1px solid #302a20;border-radius:15px 15px 15px 4px;padding:10px 12px;min-width:110px;max-width:100%;overflow-wrap:anywhere}
+.mine .bubble{background:linear-gradient(135deg,#2b2417,#211b12);border-color:#6b5328;border-radius:15px 15px 4px 15px}
+.msgname{font-size:11px;color:var(--gold);margin-bottom:6px}.msgtext{font-size:14px;line-height:1.8;white-space:pre-wrap}.time{font-size:10px;color:#928a7b;text-align:left;margin-top:6px}
+.msgmedia{display:block;max-width:min(260px,60vw);max-height:260px;border-radius:10px;margin-top:6px}.msg video{max-width:min(270px,65vw);border-radius:10px;margin-top:6px}.replyquote{font-size:11px;color:#c4a65d;border-right:2px solid var(--gold);padding:4px 8px;margin-bottom:7px;background:#111;border-radius:4px}
+.msgtools{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.tiny{font-size:10px;border:1px solid #4a3a20;background:#17130c;color:#cbb16e;border-radius:7px;padding:4px 6px}
+.composer{border-top:1px solid var(--line);background:#111;padding:10px;position:sticky;bottom:0}
+.replybar{display:none;align-items:center;gap:8px;padding:8px;margin-bottom:8px;border-radius:10px;background:#241e12;color:#d9bd70;font-size:12px}.replybar.show{display:flex}.replybar span{flex:1}
+.entry{display:flex;gap:8px;align-items:flex-end}.entry textarea{resize:none;min-height:46px;max-height:120px;flex:1;background:#1d1d1d;color:white;border:1px solid #423724;border-radius:14px;padding:13px;outline:none}
+.entry textarea:focus,input:focus{border-color:var(--gold)}.tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.tools .iconbtn{padding:8px 10px;font-size:15px;min-width:40px}
+.note{font-size:10px;color:#8f8777;line-height:1.7;margin:8px 3px 0}
+.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}.overlay.show{display:flex}
+.card{width:min(100%,430px);max-height:90vh;overflow:auto;background:#131313;border:1px solid #705726;border-radius:22px;padding:22px;box-shadow:0 20px 70px #000}
+.card h2{margin:0 0 8px;color:var(--gold)}.muted{color:var(--muted);font-size:12px;line-height:1.8}
+.field{display:flex;flex-direction:column;gap:7px;margin:13px 0}.field label{font-size:12px;color:#d6c7a4}.field input{width:100%;background:#202020;border:1px solid #3d3424;border-radius:11px;padding:12px;color:white;outline:none}
+.row{display:flex;gap:8px}.row>*{flex:1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.actions>*{flex:1}
+.preview{display:flex;align-items:center;gap:12px;margin:14px 0}.preview .avatar{width:70px;height:70px}
+.pills{display:flex;gap:7px;flex-wrap:wrap}.pill{padding:9px 12px;border:1px solid #4b3b20;background:#1c180f;color:#e8ca79;border-radius:10px}
+.gifgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.gifgrid img{width:100%;height:120px;object-fit:cover;border-radius:10px;border:1px solid var(--line);cursor:pointer}
+.toast{position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#e8bd58;color:#17120a;padding:11px 15px;border-radius:12px;font-size:12px;font-weight:bold;z-index:30;display:none;max-width:90%;text-align:center}.toast.show{display:block}
+.empty{text-align:center;color:#827967;padding:28px 12px;font-size:13px;line-height:2}
+footer{text-align:center;color:#6f685c;font-size:10px;padding:12px}
+@media(min-width:650px){.app{min-height:100vh}.messages{padding:18px 25px}.composer{padding:14px 20px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div id="headAvatar" class="avatar">P</div>
+  <div class="headinfo"><div class="brand">PRO CHAT <small>YOUR ROOM • YOUR PEOPLE</small></div><div class="status" id="statusText">● آماده گفت‌وگو</div></div>
+  <button class="iconbtn" id="usersBtn" title="کاربران">♙</button>
+  <button class="iconbtn" id="profileBtn" title="پروفایل و تنظیمات">⚙</button>
+</header>
+<main>
+  <section class="welcome"><h2>به اتاق پرو چت خوش اومدی ✨</h2><p>پیام بفرست، عکس و GIF انتخاب کن، پیام صوتی ضبط کن یا ویدیو پیوست کن. برای شروع، اول حساب محلی بساز یا وارد شو.</p></section>
+  <section class="messages" id="messages"><div class="empty" id="emptyState">هنوز پیامی نیست.<br>اولین پیام رو تو بفرست 👑</div></section>
+</main>
+<div class="composer">
+  <div class="replybar" id="replyBar"><span id="replyText">پاسخ به پیام</span><button class="tiny" id="cancelReply">لغو ✕</button></div>
+  <div class="entry"><textarea id="messageInput" rows="1" placeholder="پیامت رو بنویس..." maxlength="1500"></textarea><button class="btn primary" id="sendBtn">ارسال ➤</button></div>
+  <div class="tools">
+    <button class="iconbtn" id="photoBtn" title="ارسال عکس">🖼️</button>
+    <button class="iconbtn" id="gifBtn" title="GIF">GIF</button>
+    <button class="iconbtn" id="voiceBtn" title="ضبط پیام صوتی">🎙️</button>
+    <button class="iconbtn" id="videoBtn" title="ارسال ویدیو">🎥</button>
+    <button class="iconbtn" id="emojiBtn" title="ایموجی">😊</button>
+    <button class="iconbtn" id="clearBtn" title="پاک کردن پیام‌های این دستگاه">🧹</button>
+  </div>
+  <div class="note">نسخهٔ شروع: پیام‌ها روی همین دستگاه ذخیره می‌شوند. برای چت واقعی بین چند گوشی باید Firebase وصل شود. فایل‌های صوتی و ویدیویی فقط در همین نشست نمایش داده می‌شوند.</div>
+</div>
+<footer>PRO CHAT • BLACK & GOLD EDITION</footer>
+</div>
+
+<input type="file" id="photoInput" accept="image/*" hidden>
+<input type="file" id="profileInput" accept="image/*" hidden>
+<input type="file" id="videoInput" accept="video/*" hidden>
+<input type="file" id="audioInput" accept="audio/*" hidden>
+<div class="toast" id="toast"></div>
+
+<div class="overlay show" id="authOverlay">
+ <div class="card">
+  <h2>خوش اومدی به PRO CHAT 👑</h2>
+  <p class="muted">برای این نسخه می‌تونی حساب آزمایشی بسازی. اطلاعات این حساب فقط در همین مرورگر ذخیره می‌شود و ورود واقعی/آنلاین نیست.</p>
+  <div class="field"><label>نام کاربری</label><input id="authName" placeholder="مثلاً محمد" maxlength="24" autocomplete="username"></div>
+  <div class="field"><label>رمز عبور</label><input id="authPass" type="password" placeholder="حداقل 4 حرف" autocomplete="current-password"></div>
+  <div class="actions"><button class="btn primary" id="loginBtn">ورود</button><button class="btn" id="registerBtn">ساخت حساب</button></div>
+  <p class="muted" id="authMessage"></p>
+ </div>
+</div>
+
+<div class="overlay" id="profileOverlay">
+ <div class="card">
+  <h2>پروفایل و تنظیمات</h2><p class="muted">اطلاعات حساب آزمایشی این دستگاه</p>
+  <div class="preview"><div id="profileAvatar" class="avatar">P</div><div><strong id="profileDisplayName">مهمان</strong><div class="muted" id="profileUsername"></div><button class="btn" id="chooseProfileBtn" style="margin-top:8px">انتخاب عکس از گالری</button></div></div>
+  <div class="field"><label>نام نمایشی</label><input id="displayNameInput" maxlength="24" placeholder="نامی که در چت دیده می‌شود"></div>
+  <div class="actions"><button class="btn primary" id="saveProfileBtn">ذخیره تغییرات</button><button class="btn" id="logoutBtn">خروج از حساب</button><button class="btn" id="closeProfileBtn">بستن</button></div>
+  <p class="muted">نکته: اگر عکس خیلی بزرگ باشد، مرورگر آن را کوچک می‌کند تا ذخیره‌سازی راحت‌تر شود.</p>
+ </div>
+</div>
+
+<div class="overlay" id="gifOverlay">
+ <div class="card"><h2>انتخاب GIF 🎞️</h2><p class="muted">این چند GIF نمونه‌اند. برای افزودن GIF دیگر می‌تونی آدرس مستقیم تصویر GIF رو وارد کنی.</p>
+  <div class="gifgrid" id="gifGrid">
+   <img alt="GIF نمونه ۱" src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif">
+   <img alt="GIF نمونه ۲" src="https://media.giphy.com/media/3o7aD2saalBwwftBIY/giphy.gif">
+   <img alt="GIF نمونه ۳" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+   <img alt="GIF نمونه ۴" src="https://media.giphy.com/media/26ufdipQqU2lhNA4g/giphy.gif">
+  </div>
+  <div class="field"><label>یا آدرس مستقیم GIF</label><input id="gifUrl" placeholder="https://.../something.gif"></div>
+  <div class="actions"><button class="btn primary" id="sendGifUrlBtn">ارسال GIF</button><button class="btn" id="closeGifBtn">بستن</button></div>
+ </div>
+</div>
+
+<div class="overlay" id="usersOverlay">
+ <div class="card"><h2>کاربران این دستگاه ♙</h2><p class="muted">این فهرست فقط حساب‌هایی را نشان می‌دهد که در همین مرورگر ساخته شده‌اند؛ فعلاً کاربران آنلاین دیگر دستگاه‌ها دیده نمی‌شوند.</p><div id="usersList"></div><div class="actions"><button class="btn" id="closeUsersBtn">بستن</button></div></div>
+</div>
+
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const KEYS = {users:'prochat_demo_users_v1',session:'prochat_demo_session_v1',messages:'prochat_demo_messages_v1'};
+let currentUser = null, replyTo = null, recording = null, chunks = [], recordTimer = null, mutedUntil = 0;
+let sessionMediaUrls = [];
+const read = (key, fallback) => { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } };
+const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch(e) { toast('ذخیره‌سازی پر شده؛ عکس یا پیام‌های قدیمی رو پاک کن.'); return false; } };
+const escapeHTML = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
+function open(id){$(id).classList.add('show')} function close(id){$(id).classList.remove('show')}
+function getUsers(){return read(KEYS.users,[])} function getMessages(){return read(KEYS.messages,[])}
+function saveMessages(m){write(KEYS.messages,m)}
+function initials(name){return (name||'P').trim().slice(0,1).toUpperCase()}
+function avatarHTML(user, id){const el=$(id); if(!el)return; el.textContent=initials(user?.displayName||user?.username);el.style.backgroundImage='';el.style.backgroundSize='cover';el.style.backgroundPosition='center'; if(user?.avatar){el.textContent='';el.style.backgroundImage=`url("${user.avatar}")`} }
+function syncProfile(){if(!currentUser)return;avatarHTML(currentUser,'headAvatar');avatarHTML(currentUser,'profileAvatar');$('profileDisplayName').textContent=currentUser.displayName||currentUser.username;$('profileUsername').textContent='@'+currentUser.username;$('displayNameInput').value=currentUser.displayName||currentUser.username;$('statusText').textContent='● وارد شده: '+(currentUser.displayName||currentUser.username)}
+function saveCurrentUser(){let users=getUsers();const i=users.findIndex(u=>u.username.toLowerCase()===currentUser.username.toLowerCase());if(i>=0)users[i]=currentUser;else users.push(currentUser);write(KEYS.users,users);write(KEYS.session,currentUser.username);syncProfile()}
+function auth(){
+ const username=$('authName').value.trim(), password=$('authPass').value;
+ if(username.length<3){$('authMessage').textContent='نام کاربری باید حداقل ۳ حرف باشد.';return}
+ if(password.length<4){$('authMessage').textContent='رمز عبور باید حداقل ۴ حرف باشد.';return}
+ return {username,password};
+}
+$('registerBtn').onclick=()=>{const a=auth();if(!a)return;let users=getUsers();if(users.some(u=>u.username.toLowerCase()===a.username.toLowerCase())){$('authMessage').textContent='این نام قبلاً ثبت شده؛ وارد شو.';return}
+ currentUser={username:a.username,password:a.password,displayName:a.username,avatar:''};users.push(currentUser);if(!write(KEYS.users,users))return;write(KEYS.session,currentUser.username);finishAuth();toast('حساب آزمایشی ساخته شد')};
+$('loginBtn').onclick=()=>{const a=auth();if(!a)return;const u=getUsers().find(u=>u.username.toLowerCase()===a.username.toLowerCase()&&u.password===a.password);if(!u){$('authMessage').textContent='حساب پیدا نشد یا رمز اشتباه است. اول حساب بساز.';return}currentUser=u;write(KEYS.session,u.username);finishAuth();toast('ورود موفق بود')};
+function finishAuth(){close('authOverlay');syncProfile();renderMessages()}
+const sessionName=read(KEYS.session,''); if(sessionName){const u=getUsers().find(u=>u.username===sessionName);if(u){currentUser=u;close('authOverlay');syncProfile();renderMessages()}}
+$('profileBtn').onclick=()=>{if(!currentUser){open('authOverlay');return}syncProfile();open('profileOverlay')};
+$('closeProfileBtn').onclick=()=>close('profileOverlay');
+$('chooseProfileBtn').onclick=()=>$('profileInput').click();
+$('profileInput').onchange=async e=>{const file=e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){toast('لطفاً فایل عکس انتخاب کن.');return}try{const data=await compressImage(file,240,0.78);currentUser.avatar=data;saveCurrentUser();toast('عکس پروفایل ذخیره شد')}catch{toast('عکس باز نشد؛ یک عکس دیگر امتحان کن.')}e.target.value=''};
+$('saveProfileBtn').onclick=()=>{const n=$('displayNameInput').value.trim();if(!n){toast('نام نمایشی خالی نباشد.');return}currentUser.displayName=n.slice(0,24);saveCurrentUser();renderMessages();close('profileOverlay');toast('پروفایل ذخیره شد')};
+$('logoutBtn').onclick=()=>{if(currentUser){write(KEYS.session,'');currentUser=null}close('profileOverlay');open('authOverlay');$('authMessage').textContent='از حساب خارج شدی.';toast('خارج شدی')};
+function compressImage(file,maxSide=1000,quality=.75){return new Promise((resolve,reject)=>{const fr=new FileReader();fr.onerror=reject;fr.onload=()=>{const im=new Image();im.onerror=reject;im.onload=()=>{const scale=Math.min(1,maxSide/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));c.getContext('2d').drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality))};im.src=fr.result};fr.readAsDataURL(file)})}
+function profanityCheck(text){const bad=['fuck','shit','bitch','asshole','bastard','motherfucker','فحش','کص','کسکش','کونی','جنده','حرومزاده','بی‌شعور','بی شعور'];const normalized=text.toLowerCase().replace(/[۰-۹]/g,c=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(c)).replace(/[\s._\-*]+/g,'');return bad.some(w=>normalized.includes(w.replace(/[\s._\-*]+/g,'')))}
+function canSend(text){if(Date.now()<mutedUntil){toast('فعلاً به‌خاطر پیام نامناسب، ارسال پیام برایت متوقف شده.');return false}if(profanityCheck(text)){mutedUntil=Date.now()+60000;toast('هشدار ربات: پیام نامناسب تشخیص داده شد؛ ۶۰ ثانیه نمی‌تونی پیام بفرستی.');return false}return true}
+function addMessage({text='',type='text',media='',reply='',name='',user='',avatar=''}){if(!currentUser){open('authOverlay');return}if(text&&!canSend(text))return;const m=getMessages();m.push({id:Date.now()+Math.random(),username:currentUser.username,name:currentUser.displayName||currentUser.username,avatar:currentUser.avatar||'',text,type,media,reply,time:Date.now()});if(!write(KEYS.messages,m))return;replyTo=null;updateReplyBar();renderMessages();$('messageInput').value='';$('messageInput').style.height='46px';$('messageInput').focus()}
+function renderMessages(){const box=$('messages');const msgs=getMessages();box.innerHTML='';if(!msgs.length){box.innerHTML='<div class="empty">هنوز پیامی نیست.<br>اولین پیام رو تو بفرست 👑</div>';return}for(const m of msgs){const mine=currentUser&&m.username===currentUser.username;const article=document.createElement('article');article.className='msg'+(mine?' mine':'');const av=document.createElement('div');av.className='avatar';av.textContent=initials(m.name);if(m.avatar){av.textContent='';av.style.backgroundImage=`url("${m.avatar}")`;av.style.backgroundSize='cover';av.style.backgroundPosition='center'}
+ const bubble=document.createElement('div');bubble.className='bubble';let html=`<div class="msgname">${escapeHTML(m.name||m.username||'کاربر')}</div>`;if(m.reply)html+=`<div class="replyquote">پاسخ به: ${escapeHTML(m.reply)}</div>`;if(m.text)html+=`<div class="msgtext">${escapeHTML(m.text)}</div>`;bubble.innerHTML=html;
+ if(m.type==='image'||m.type==='gif'){const im=document.createElement('img');im.className='msgmedia';im.src=m.media;im.alt=m.type==='gif'?'GIF':'تصویر';im.loading='lazy';bubble.appendChild(im)}
+ if(m.type==='audio'){const au=document.createElement('audio');au.controls=true;au.src=m.media;au.className='msgmedia';bubble.appendChild(au)}
+ if(m.type==='video'){const vi=document.createElement('video');vi.controls=true;vi.src=m.media;vi.className='msgmedia';vi.playsInline=true;bubble.appendChild(vi)}
+ const time=document.createElement('div');time.className='time';time.textContent=new Date(m.time).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'});bubble.appendChild(time);
+ const tools=document.createElement('div');tools.className='msgtools';const reply=document.createElement('button');reply.className='tiny';reply.textContent='↩ پاسخ';reply.onclick=()=>{replyTo=m.name+': '+(m.text||({image:'عکس',gif:'GIF',audio:'پیام صوتی',video:'ویدیو'}[m.type]||'پیام'));updateReplyBar();$('messageInput').focus()};tools.appendChild(reply);
+ if(mine){const del=document.createElement('button');del.className='tiny';del.textContent='حذف';del.onclick=()=>{if(confirm('این پیام از همین دستگاه حذف شود؟')){saveMessages(getMessages().filter(x=>x.id!==m.id));if(m.media&&m.media.startsWith('blob:'))URL.revokeObjectURL(m.media);renderMessages()}};tools.appendChild(del)}
+ bubble.appendChild(tools);article.appendChild(av);article.appendChild(bubble);box.appendChild(article)}
+ box.scrollTop=box.scrollHeight}
+function updateReplyBar(){if(replyTo){$('replyBar').classList.add('show');$('replyText').textContent='پاسخ به: '+replyTo}else $('replyBar').classList.remove('show')}
+$('cancelReply').onclick=()=>{replyTo=null;updateReplyBar()};
+$('sendBtn').onclick=()=>{const text=$('messageInput').value.trim();if(!text)return;addMessage({text,reply:replyTo||''})};
+$('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('sendBtn').click()}});
+$('messageInput').addEventListener('input',e=>{e.target.style.height='46px';e.target.style.height=Math.min(e.target.scrollHeight,120)+'px'});
+$('photoBtn').onclick=()=>$('photoInput').click();
+$('photoInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){toast('فایل عکس انتخاب کن.');return}try{const data=await compressImage(f,1200,.72);addMessage({type:'image',media:data,reply:replyTo||''})}catch{toast('عکس خوانده نشد.')}e.target.value=''};
+$('gifBtn').onclick=()=>open('gifOverlay');$('closeGifBtn').onclick=()=>close('gifOverlay');
+$('gifGrid').onclick=e=>{if(e.target.tagName==='IMG'){addMessage({type:'gif',media:e.target.src,reply:replyTo||''});close('gifOverlay')}};
+$('sendGifUrlBtn').onclick=()=>{const url=$('gifUrl').value.trim();if(!/^https?:\/\/.+/i.test(url)){toast('آدرس معتبر GIF وارد کن.');return}addMessage({type:'gif',media:url,reply:replyTo||''});$('gifUrl').value='';close('gifOverlay')};
+$('emojiBtn').onclick=()=>{const emojis=['😀','😂','😍','🔥','❤️','👏','😎','👑','🎉','⚽'];const chosen=prompt('یک ایموجی رو کپی کن یا از این‌ها انتخاب کن:\\n'+emojis.join(' '));if(chosen)$('messageInput').value+=$('messageInput').value?' '+chosen:chosen;$('messageInput').focus()};
+$('voiceBtn').onclick=async()=>{if(recording){recording.stop();return}if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder){toast('ضبط صدا در این مرورگر پشتیبانی نمی‌شود؛ از مرورگر به‌روز استفاده کن.');return}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];recording=new MediaRecorder(stream);recording.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};recording.onstop=()=>{const blob=new Blob(chunks,{type:recording.mimeType||'audio/webm'});const url=URL.createObjectURL(blob);sessionMediaUrls.push(url);addMessage({type:'audio',media:url,reply:replyTo||''});stream.getTracks().forEach(t=>t.stop());recording=null;$('voiceBtn').textContent='🎙️';toast('پیام صوتی آماده شد؛ فقط در همین نشست در دسترس است.')};recording.start();$('voiceBtn').textContent='⏹️';toast('در حال ضبط... برای پایان دوباره روی دکمه بزن.')}catch{toast('اجازهٔ میکروفون داده نشد. صفحه باید در محیط امن HTTPS یا localhost باز شود.')}};
+$('videoBtn').onclick=()=>$('videoInput').click();
+$('videoInput').onchange=e=>{const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('video/')){toast('فایل ویدیویی انتخاب کن.');return}if(f.size>80*1024*1024){toast('برای این نسخه ویدیو باید کمتر از ۸۰ مگابایت باشد.');e.target.value='';return}const url=URL.createObjectURL(f);sessionMediaUrls.push(url);addMessage({type:'video',media:url,reply:replyTo||''});toast('ویدیو اضافه شد؛ با بستن/تازه‌سازی صفحه ممکن است از دست برود.');e.target.value=''};
+$('clearBtn').onclick=()=>{if(confirm('تمام پیام‌های ذخیره‌شده روی همین دستگاه پاک شوند؟')){saveMessages([]);renderMessages();toast('پیام‌های این دستگاه پاک شدند.')}};
+$('usersBtn').onclick=()=>{const list=getUsers();$('usersList').innerHTML='';if(!list.length)$('usersList').innerHTML='<p class="muted">هنوز حسابی ساخته نشده.</p>';list.forEach(u=>{const d=document.createElement('div');d.style.cssText='display:flex;align-items:center;gap:10px;padding:10px;border-bottom:1px solid #302a20';const av=document.createElement('div');av.className='avatar';av.textContent=initials(u.displayName||u.username);if(u.avatar){av.textContent='';av.style.backgroundImage=`url("${u.avatar}")`;av.style.backgroundSize='cover'}const t=document.createElement('div');t.innerHTML=`<strong>${escapeHTML(u.displayName||u.username)}</strong><div class="muted">@${escapeHTML(u.username)}</div>`;d.append(av,t);$('usersList').appendChild(d)});open('usersOverlay')};
+$('closeUsersBtn').onclick=()=>close('usersOverlay');
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o&&o.id!=='authOverlay')close(o.id)}));
+})();
+</script>
+</body>
+</html>
